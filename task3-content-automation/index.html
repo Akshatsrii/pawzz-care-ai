@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawzz Content Studio — Autonomous Carousel Pipeline</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- HTML2Canvas for 1-click Slide Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            orange: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 4:5 Instagram & LinkedIn Carousel Ratio */
+    .slide-viewport {
+      aspect-ratio: 4 / 5;
+      width: 100%;
+      max-width: 440px;
+    }
+    .custom-shadow {
+      box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+
+  <!-- Top Header Navigation (Clean White & Orange) -->
+  <header class="border-b border-slate-200 bg-white sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-xs">
+          <i data-lucide="layers" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-base font-extrabold text-slate-900">Pawzz<span class="text-orange-600">Studio</span></span>
+            <span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-1.5 py-0.5 rounded">Content Automation</span>
+          </div>
+          <p class="text-[11px] text-slate-500">Autonomous LinkedIn & Instagram Carousel Engine</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="switchTab('carousel')" id="tabBtnCarousel" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-orange-600 text-white transition shadow-xs">
+          Interactive Sample Carousel
+        </button>
+        <button onclick="switchTab('workflow')" id="tabBtnWorkflow" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          Workflow Architecture
+        </button>
+        <button onclick="switchTab('generator')" id="tabBtnGenerator" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          Live Prompt Simulator
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
+    
+    <!-- TAB 1: SAMPLE CAROUSEL VIEWER (Crisp White & Warm Orange 4:5 Cards) -->
+    <section id="sectionCarousel" class="space-y-6">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Candidate Assignment Deliverable — Part 3</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+            Deliverable Carousel: "The 4-Step Autonomous Content Engine"
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+            Designed for Pawzz Foundation. 4:5 Instagram & LinkedIn aspect ratio. Crisp white background with warm orange accents, high-contrast typography, and 1-click PNG export.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2.5">
+          <button onclick="downloadCurrentSlide()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+            <i data-lucide="download" class="w-4 h-4 text-orange-600"></i>
+            <span>Export Active Slide (PNG)</span>
+          </button>
+          <button onclick="autoPlayCarousel()" id="autoPlayBtn" class="px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer">
+            <i data-lucide="play" class="w-4 h-4"></i>
+            <span>Auto Play (5s)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Carousel Viewer Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+        
+        <!-- Left: Slide Deck Interactive Viewport (7 Cols) -->
+        <div class="lg:col-span-7 flex flex-col items-center justify-center">
+          
+          <!-- Slide Container Box (4:5 Aspect Ratio, White & Orange) -->
+          <div id="slideCaptureTarget" class="slide-viewport bg-white rounded-3xl border-2 border-slate-200/90 custom-shadow p-7 flex flex-col justify-between relative overflow-hidden text-slate-800 transition-all duration-300">
+            <!-- Dynamic Slide Content Rendered by JS -->
+          </div>
+
+          <!-- Carousel Controls Below Slide -->
+          <div class="w-full max-w-[440px] mt-4 flex items-center justify-between bg-white p-2.5 rounded-2xl border border-slate-200 shadow-xs">
+            <button onclick="prevSlide()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer" title="Previous Slide">
+              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Slide Dots -->
+            <div class="flex items-center gap-1.5" id="slideDots">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="text-xs font-bold text-slate-500">
+              Slide <span id="currentSlideNum" class="text-slate-900">1</span> of 7
+            </div>
+
+            <button onclick="nextSlide()" class="p-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white transition cursor-pointer" title="Next Slide">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Right: Slide Architecture & Metadata Breakdown (5 Cols) -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Slide Inspection</span>
+              <h3 class="text-base font-bold text-slate-900" id="slideInspectorTitle">Slide 1: High-Conversion Hook</h3>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-700 text-[10px] font-bold border border-orange-200" id="slideRoleTag">
+              Cover Slide
+            </span>
+          </div>
+
+          <div class="space-y-3.5 text-xs">
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">Psychological Objective:</label>
+              <p class="text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200/80 leading-relaxed" id="slideObjectiveText">
+                Stop the LinkedIn feed scroll within 1.5 seconds by highlighting an acute founder bottleneck: spending 15 hours designing visuals instead of shipping product.
+              </p>
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">Visual Hierarchy Elements:</label>
+              <ul class="text-slate-600 space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200/80" id="slideElementsList">
+                <!-- Dynamically updated -->
+              </ul>
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-700 block mb-1">Generated Caption Snippet:</label>
+              <div class="text-[11px] text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200/80 leading-relaxed" id="slideCaptionSnippet">
+                Founders don't need a $4,000/mo design agency to build brand authority on LinkedIn. Here is the 4-step autonomous system we use to produce 5 carousels a week in under 15 minutes. 👇
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 2: WORKFLOW ARCHITECTURE (Clean White Cards) -->
+    <section id="sectionWorkflow" class="hidden space-y-8">
+      
+      <div class="max-w-2xl">
+        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">System Design & Orchestration</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+          The Zero-Designer Autonomous Workflow
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1.5">
+          How a founder voice memo or raw bullet note transforms into an editable, branded, ready-to-publish carousel in under 2 minutes.
+        </p>
+      </div>
+
+      <!-- 5-Stage Visual Workflow Pipeline -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-3 pt-1">
+        
+        <!-- Stage 1 -->
+        <div class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xs mb-3">01</div>
+            <h4 class="text-xs font-bold text-slate-900">Raw Ingestion</h4>
+            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Founder speaks a 60s voice note on Telegram or drops 3 bullet points into Notion.</p>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-100 text-[10px] text-orange-700 font-bold">
+            Telegram / Notion Trigger
+          </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xs mb-3">02</div>
+            <h4 class="text-xs font-bold text-slate-900">AI Structuring</h4>
+            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Claude 3.7 structures the idea into a 7-slide framework: Hook $\rightarrow$ Pain $\rightarrow$ Steps $\rightarrow$ CTA.</p>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-100 text-[10px] text-orange-700 font-bold">
+            Claude 3.7 Sonnet (JSON)
+          </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xs mb-3">03</div>
+            <h4 class="text-xs font-bold text-slate-900">Design Tokens</h4>
+            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Maps headlines, emphasis keywords, and chips into template variables with character limits.</p>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-100 text-[10px] text-orange-700 font-bold">
+            Token Mapper (Zero Overflow)
+          </div>
+        </div>
+
+        <!-- Stage 4 -->
+        <div class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xs mb-3">04</div>
+            <h4 class="text-xs font-bold text-slate-900">Template Render</h4>
+            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">n8n sends variables to Bannerbear API or Canva Autofill to generate editable high-res slides.</p>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-100 text-[10px] text-orange-700 font-bold">
+            Canva API / Bannerbear
+          </div>
+        </div>
+
+        <!-- Stage 5 -->
+        <div class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xs mb-3">05</div>
+            <h4 class="text-xs font-bold text-slate-900">60s Review & Post</h4>
+            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Telegram alert ping with slide previews. 1-click approve sends to Buffer/LinkedIn scheduler.</p>
+          </div>
+          <div class="mt-4 pt-2 border-t border-slate-100 text-[10px] text-orange-700 font-bold">
+            Buffer / Publer Auto-Post
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tools & Economics (Clean White Cards) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-3">
+            <i data-lucide="tool" class="w-4 h-4 text-orange-600"></i>
+            Recommended Tool Stack & Rationale
+          </h3>
+          <div class="space-y-3 text-xs text-slate-600">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <strong class="text-slate-900">Orchestrator: n8n (Self-hosted or Cloud)</strong>
+              <p class="text-slate-500 mt-1">Unlike Make.com which charges per operation, self-hosted n8n is unlimited, supports complex branching, and securely manages API secrets.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <strong class="text-slate-900">LLM Engine: Claude 3.7 Sonnet (Anthropic API)</strong>
+              <p class="text-slate-500 mt-1">Best-in-class reasoning for social copywriting, adherence to strict JSON formatting, and avoiding corporate buzzwords.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <strong class="text-slate-900">Design Engine: Canva Automate / Bannerbear API</strong>
+              <p class="text-slate-500 mt-1">Bannerbear allows 100% programmatic image generation with pixel perfection; Canva allows founder to click one link and manually tweak font sizes if needed.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-3">
+            <i data-lucide="bar-chart-2" class="w-4 h-4 text-emerald-600"></i>
+            Economics: Traditional Agency vs Automated Engine
+          </h3>
+          <div class="space-y-3 text-xs text-slate-600">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="flex justify-between font-bold text-slate-800">
+                <span>Traditional Freelancer / In-House Designer:</span>
+                <span class="text-rose-600">₹35,000 – ₹50,000 / month</span>
+              </div>
+              <p class="text-slate-500 mt-1">Turnaround time: 24–48 hours per carousel. 3 revisions back-and-forth. High management overhead.</p>
+            </div>
+            <div class="p-3 bg-orange-50/60 border border-orange-200 rounded-xl p-3">
+              <div class="flex justify-between font-bold text-slate-900">
+                <span>Automated AI Systems Engine:</span>
+                <span class="text-orange-700">~₹1,200 / month ($15 API costs)</span>
+              </div>
+              <p class="text-slate-700 mt-1">Turnaround time: <strong>90 seconds</strong>. Unlimited variations. Consistent branded typography and color schemes.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 3: LIVE PROMPT & SYSTEM SIMULATOR (Clean White) -->
+    <section id="sectionGenerator" class="hidden space-y-6">
+      <div class="max-w-2xl">
+        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Interactive Prototype Demonstration</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+          Test the Autonomous Content Pipeline
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1">
+          Type a raw founder thought below and click "Run Autonomous Pipeline". The simulated AI engine will parse, structure, and render the slide deck in real-time.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+        
+        <!-- Left: Input Form (5 Cols) -->
+        <div class="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Raw Founder Idea / Brain Dump:</label>
+            <textarea id="rawInputIdea" rows="4" class="w-full bg-slate-50 border border-slate-200 focus:border-orange-500 rounded-xl p-3 text-xs text-slate-800 focus:outline-none leading-relaxed">Most founders fail at AI because they try to automate everything at once. You should only automate the 3 lowest-leverage bottlenecks: social carousel generation, email triage, and competitive scraping.</textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Target Tone</label>
+              <select id="simTone" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 font-medium">
+                <option>Direct & Tactical (Founder Voice)</option>
+                <option>Analytical & Data-Driven</option>
+                <option>Story-Driven / Narrative</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Slide Count</label>
+              <select id="simSlidesCount" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 font-medium">
+                <option>7 Slides (Standard Conversion)</option>
+                <option>5 Slides (Quick Takeaway)</option>
+              </select>
+            </div>
+          </div>
+
+          <button onclick="runSimulation()" id="simulateBtn" class="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs shadow-xs flex items-center justify-center gap-2 transition cursor-pointer">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+            <span>Run Autonomous Pipeline (Simulate)</span>
+          </button>
+
+          <!-- System Logs Output Box -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] font-mono text-slate-600 space-y-1">
+            <div class="text-orange-700 font-bold">⚡ Pipeline State: Ready</div>
+            <div id="simLog">Awaiting trigger input...</div>
+          </div>
+        </div>
+
+        <!-- Right: Generated Structured JSON Schema (7 Cols) -->
+        <div class="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <span class="text-xs font-bold text-slate-700 font-mono">Structured JSON Output (Design Tokens)</span>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-mono font-bold">Validated Schema</span>
+          </div>
+          <pre id="jsonPreviewBox" class="mt-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-[11px] font-mono text-slate-800 overflow-x-auto max-h-[380px] custom-scroll leading-relaxed">
+{
+  "carousel_metadata": {
+    "topic": "The 3 AI Workflows to Automate First",
+    "target_platform": "LinkedIn / Instagram",
+    "total_slides": 7,
+    "theme_tokens": {
+      "primary_color": "#ea580c",
+      "background": "#ffffff",
+      "font_family": "Plus Jakarta Sans"
+    }
+  },
+  "slides": [
+    {
+      "slide_number": 1,
+      "type": "HOOK_COVER",
+      "hook_tag": "FOUNDER ADVICE",
+      "headline": "Stop trying to automate your entire startup with AI.",
+      "subheadline": "Automate these 3 specific bottlenecks instead:",
+      "swipe_prompt": "Swipe to inspect the 3 workflows ➔"
+    }
+  ]
+}
+          </pre>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Slide Data & Script (Clean White & Warm Orange Theme) -->
+  <script>
+    const slidesData = [
+      {
+        num: 1,
+        role: "Cover Slide (The Hook)",
+        objective: "Stop the LinkedIn feed scroll within 1.5 seconds by highlighting an acute founder bottleneck: spending 15 hours designing visuals instead of shipping product.",
+        elements: ["Eye-grabbing warm orange tag", "Bold headline addressing founder pain", "Pawzz author badge & avatar", "Clear swipe prompt"],
+        caption: "Founders don't need a $4,000/mo design agency to build brand authority on LinkedIn. Here is the 4-step autonomous system we use to produce 5 carousels a week in under 15 minutes. 👇",
+        render: `
+          <div class="h-full flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-full bg-orange-100 text-orange-800 border border-orange-200 text-xs font-bold uppercase tracking-wider">
+                Founder Playbook
+              </span>
+              <span class="text-xs font-bold text-slate-400">01 / 07</span>
+            </div>
+
+            <div class="my-auto py-4">
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+                How to Build an <span class="text-orange-600">AI Content Engine</span> That Runs on Autopilot.
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-600 mt-4 leading-relaxed font-normal">
+                The exact 4-layer automation pipeline to produce high-impact LinkedIn & Instagram carousels in 90 seconds without hiring an agency.
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center font-bold text-xs text-white">AK</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-900">Pawzz Foundation</div>
+                  <div class="text-[10px] text-slate-500">Founder Content Engine</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 text-xs font-bold text-orange-600">
+                <span>Swipe</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        num: 2,
+        role: "The Core Bottleneck",
+        objective: "Establish empathy and diagnose the root issue: Founders waste prime energy in Canva dragging rectangles instead of speaking to customers.",
+        elements: ["Contrast card (15 hrs manual vs 15 mins automated)", "Problem breakdown", "Direct relatable stat"],
+        caption: "If you are spending Sunday evening aligning text boxes on slide 6 of a carousel, you are operating as an overpaid graphic designer, not a founder.",
+        render: `
+          <div class="h-full flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold">
+                The Bottleneck
+              </span>
+              <span class="text-xs font-bold text-slate-400">02 / 07</span>
+            </div>
+
+            <div class="my-auto py-2 space-y-3.5">
+              <h3 class="text-xl font-bold text-slate-900 leading-tight">
+                Why 90% of Founders Abandon Visual Content After 3 Weeks:
+              </h3>
+              
+              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
+                <div class="text-rose-600 font-bold flex items-center gap-1.5">
+                  <i data-lucide="alert-circle" class="w-4 h-4"></i> The Manual Content Tax:
+                </div>
+                <p class="text-slate-600 leading-relaxed text-[11px]">
+                  Writing copy: <strong>45 mins</strong><br>
+                  Fiddling in Canva grids: <strong>90 mins</strong><br>
+                  Exporting, formatting & tagging: <strong>20 mins</strong><br>
+                  <span class="text-rose-600 font-bold">Total: ~2.5 hours per single carousel.</span>
+                </p>
+              </div>
+
+              <p class="text-xs text-slate-600">
+                You can't stay consistent when the friction is this high. You need a system that decouples <em>your thoughts</em> from <em>graphic production</em>.
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+              <span>Pawzz Systems</span>
+              <span class="text-orange-600 font-semibold">The Solution ➔</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        num: 3,
+        role: "System Architecture",
+        objective: "Introduce the 4-layer technical stack so the reader sees how simple the whole pipeline actually is.",
+        elements: ["4-Layer stacked visual boxes", "Data flow arrows", "Clear layer titles"],
+        caption: "Here is the 4-layer architecture we built. It replaces an agency retainer with a $15/mo automation setup.",
+        render: `
+          <div class="h-full flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200 text-[11px] font-bold">
+                The Blueprint
+              </span>
+              <span class="text-xs font-bold text-slate-400">03 / 07</span>
+            </div>
+
+            <div class="my-auto space-y-2 py-1">
+              <h3 class="text-lg font-bold text-slate-900">
+                The 4-Layer Autonomous Stack:
+              </h3>
+
+              <div class="space-y-1.5 text-[11px]">
+                <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-md bg-orange-600 text-white flex items-center justify-center font-bold text-[10px]">1</span>
+                  <div>
+                    <strong class="text-slate-900">Ingestion:</strong>
+                    <span class="text-slate-600"> Telegram Voice Note or Notion Quick Note</span>
+                  </div>
+                </div>
+
+                <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-md bg-orange-600 text-white flex items-center justify-center font-bold text-[10px]">2</span>
+                  <div>
+                    <strong class="text-slate-900">Reasoning & Structure:</strong>
+                    <span class="text-slate-600"> Claude 3.7 JSON Schema</span>
+                  </div>
+                </div>
+
+                <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-md bg-orange-600 text-white flex items-center justify-center font-bold text-[10px]">3</span>
+                  <div>
+                    <strong class="text-slate-900">Rendering:</strong>
+                    <span class="text-slate-600"> Bannerbear API / Canva Autofill</span>
+                  </div>
+                </div>
+
+                <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-md bg-orange-600 text-white flex items-center justify-center font-bold text-[10px]">4</span>
+                  <div>
+                    <strong class="text-slate-900">Approval & Distribution:</strong>
+                    <span class="text-slate-600"> 1-Click Buffer Post</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+              <span>Pawzz Systems</span>
+              <span class="text-orange-600 font-semibold">Step 1 & 2 Deep Dive ➔</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        num: 4,
+        role: "Layer 1 & 2: Prompting Engine",
+        objective: "Provide the exact prompt schema used to generate punchy, high-retention slides without conversational fluff.",
+        elements: ["Code/JSON snippet block", "Hook generation rule", "Slide structure constraints"],
+        caption: "Never ask an LLM to 'write a carousel'. Give it a deterministic schema with strict character limits.",
+        render: `
+          <div class="h-full flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200 text-[11px] font-bold">
+                Step 1: The AI Schema
+              </span>
+              <span class="text-xs font-bold text-slate-400">04 / 07</span>
+            </div>
+
+            <div class="my-auto space-y-3 py-2">
+              <h3 class="text-base sm:text-lg font-bold text-slate-900">
+                Deterministic Prompt Structure:
+              </h3>
+              
+              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] font-mono text-slate-800 leading-relaxed">
+                <span class="text-slate-400">// Strict Schema Rules:</span><br>
+                1. Slide 1 Headline: &lt;10 words, high contrast<br>
+                2. Slides 2-5: 1 core insight per slide<br>
+                3. Bullet points: Max 3 per slide, &lt;8 words each<br>
+                4. Output strictly as JSON tokens
+              </div>
+
+              <p class="text-xs text-slate-600 leading-relaxed">
+                By enforcing tight character constraints, the text fits into design templates automatically without overlapping or awkward line wraps.
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+              <span>Pawzz Systems</span>
+              <span class="text-orange-600 font-semibold">Step 2: Auto-Design ➔</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        num: 5,
+        role: "Layer 3: Programmatic Design",
+        objective: "Explain how Canva API / Bannerbear renders variables into pixel-perfect branded graphics in seconds.",
+        elements: ["Template variable mapping", "Color token consistency", "Zero manual dragging"],
+        caption: "Design isn't art when it comes to social carousels; it's modular component layout.",
+        render: `
+          <div class="h-full flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200 text-[11px] font-bold">
+                Step 2: Template Magic
+              </span>
+              <span class="text-xs font-bold text-slate-400">05 / 07</span>
+            </div>
+
+            <div class="my-auto space-y-3 py-2">
+              <h3 class="text-base sm:text-lg font-bold text-slate-900">
+                How Design Automation Works:
+              </h3>
+              
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="text-slate-500">Template Master:</span>
+                  <span class="font-bold text-slate-900">Created Once in Canva</span>
+                </div>
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="text-slate-500">Variables Injected:</span>
+                  <span class="font-bold text-orange-600">{{headline}}, {{body}}, {{tag}}</span>
+                </div>
+                <div class="flex items-center justify-between text-[11px]">
+                  <span class="text-slate-500">Render Speed:</span>
+                  <span class="font-bold text-emerald-600">&lt; 3.2 seconds / slide</span>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Your visual branding (warm orange accents, font weights, handle, profile avatar) stays 100% consistent across every post without manual work.
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+              <span>Pawzz Systems</span>
+              <span class="text-orange-600 font-semibold">The Result & Metrics ➔</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        num: 6,
+        role: "The Impact & ROI",
+        objective: "Highlight the concrete metric payoff: 90% time saved, 4x content output, and zero recurring graphic designer payroll.",
+        elements: ["Key ROI metric callouts", "Comparison stat pills", "Founder leverage focus"],
+        caption: "The goal of AI in a startup isn't to look cool — it is to multiply founder leverage by 10x.",
+        render: `
+          <div class="h-full flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+                The Payoff
+              </span>
+              <span class="text-xs font-bold text-slate-400">06 / 07</span>
+            </div>
+
+            <div class="my-auto space-y-3 py-2">
+              <h3 class="text-xl font-bold text-slate-900">
+                The Real Metrics After 30 Days:
+              </h3>
+              
+              <div class="grid grid-cols-2 gap-2.5 text-center">
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div class="text-2xl font-extrabold text-orange-600">90 Sec</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">Idea to ready slides</div>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div class="text-2xl font-extrabold text-slate-900">5x / Wk</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">Publishing consistency</div>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div class="text-2xl font-extrabold text-emerald-600">₹0</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">Design agency fees</div>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div class="text-2xl font-extrabold text-slate-900">100%</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">Founder authentic voice</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+              <span>Pawzz Systems</span>
+              <span class="text-orange-600 font-semibold">Final Takeaway ➔</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        num: 7,
+        role: "The Call to Action & Retention",
+        objective: "Drive comments, shares, and lead capture by offering the exact n8n workflow JSON blueprint.",
+        elements: ["High-contrast CTA card", "Engagement incentive", "Save & share reminder"],
+        caption: "Want the exact n8n workflow file and Canva template tokens? Comment 'SYSTEM' below and I'll send you the blueprint.",
+        render: `
+          <div class="h-full flex flex-col justify-between text-center">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200 text-[11px] font-bold">
+                Action Step
+              </span>
+              <span class="text-xs font-bold text-slate-400">07 / 07</span>
+            </div>
+
+            <div class="my-auto space-y-4 py-2">
+              <div class="w-12 h-12 rounded-2xl bg-orange-600 flex items-center justify-center mx-auto text-white shadow-xs">
+                <i data-lucide="bookmark" class="w-6 h-6"></i>
+              </div>
+
+              <h3 class="text-xl font-extrabold text-slate-900">
+                Want the Exact n8n Workflow JSON?
+              </h3>
+
+              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-700 space-y-2">
+                <p>1. <strong>Save this carousel</strong> for reference.</p>
+                <p>2. Comment <span class="bg-orange-600 text-white px-2 py-0.5 rounded font-bold">"WORKFLOW"</span> below.</p>
+                <p class="text-[10px] text-orange-700 font-medium">Our automated DM bot will instantly send you the n8n template file & prompt schema.</p>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span class="flex items-center gap-1"><i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500"></i> Like</span>
+              <span class="flex items-center gap-1"><i data-lucide="repeat" class="w-3.5 h-3.5 text-emerald-600"></i> Repost</span>
+              <span class="flex items-center gap-1 font-bold text-slate-800"><i data-lucide="bookmark" class="w-3.5 h-3.5 text-orange-600"></i> Save</span>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let currentSlide = 0;
+    let autoPlayInterval = null;
+
+    function renderSlide(index) {
+      currentSlide = index;
+      const target = document.getElementById('slideCaptureTarget');
+      const data = slidesData[index];
+
+      target.innerHTML = data.render;
+      document.getElementById('currentSlideNum').innerText = index + 1;
+      document.getElementById('slideInspectorTitle').innerText = `Slide ${index + 1}: ${data.role}`;
+      document.getElementById('slideRoleTag').innerText = data.role;
+      document.getElementById('slideObjectiveText').innerText = data.objective;
+      document.getElementById('slideCaptionSnippet').innerText = data.caption;
+
+      // Update elements list
+      const elList = document.getElementById('slideElementsList');
+      elList.innerHTML = data.elements.map(e => `
+        <li class="flex items-center gap-2">
+          <i data-lucide="check" class="w-3.5 h-3.5 text-orange-600"></i>
+          <span>${e}</span>
+        </li>
+      `).join('');
+
+      // Update dots
+      const dotsContainer = document.getElementById('slideDots');
+      dotsContainer.innerHTML = slidesData.map((_, i) => `
+        <button onclick="renderSlide(${i})" class="w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${i === index ? 'bg-orange-600 w-6' : 'bg-slate-300 hover:bg-slate-400'}"></button>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function nextSlide() {
+      const next = (currentSlide + 1) % slidesData.length;
+      renderSlide(next);
+    }
+
+    function prevSlide() {
+      const prev = (currentSlide - 1 + slidesData.length) % slidesData.length;
+      renderSlide(prev);
+    }
+
+    function autoPlayCarousel() {
+      const btn = document.getElementById('autoPlayBtn');
+      if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        btn.innerHTML = `<i data-lucide="play" class="w-4 h-4"></i><span>Auto Play (5s)</span>`;
+      } else {
+        btn.innerHTML = `<i data-lucide="pause" class="w-4 h-4"></i><span>Pause Playing</span>`;
+        autoPlayInterval = setInterval(() => {
+          nextSlide();
+        }, 4500);
+      }
+      lucide.createIcons();
+    }
+
+    function downloadCurrentSlide() {
+      const target = document.getElementById('slideCaptureTarget');
+      html2canvas(target, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `pawzz-carousel-slide-${currentSlide + 1}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    function switchTab(tab) {
+      document.getElementById('sectionCarousel').classList.toggle('hidden', tab !== 'carousel');
+      document.getElementById('sectionWorkflow').classList.toggle('hidden', tab !== 'workflow');
+      document.getElementById('sectionGenerator').classList.toggle('hidden', tab !== 'generator');
+
+      document.getElementById('tabBtnCarousel').className = tab === 'carousel' ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-orange-600 text-white transition shadow-xs' : 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+      document.getElementById('tabBtnWorkflow').className = tab === 'workflow' ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-orange-600 text-white transition shadow-xs' : 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+      document.getElementById('tabBtnGenerator').className = tab === 'generator' ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-orange-600 text-white transition shadow-xs' : 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+      lucide.createIcons();
+    }
+
+    function runSimulation() {
+      const log = document.getElementById('simLog');
+      const btn = document.getElementById('simulateBtn');
+      btn.disabled = true;
+      btn.innerText = "Running AI Ingestion & Claude Structuring...";
+
+      log.innerHTML = "1. Transcribing input & extracting core entities...";
+      setTimeout(() => {
+        log.innerHTML = "2. Applying 7-slide viral retention framework via Claude 3.7 Sonnet...";
+      }, 700);
+
+      setTimeout(() => {
+        log.innerHTML = "3. Mapping tokens into JSON schema & validating character limits...";
+      }, 1400);
+
+      setTimeout(() => {
+        log.innerHTML = "4. Dispatched to Canva API. 7 Slides compiled successfully! ✅";
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Complete! View in Carousel Tab`;
+        lucide.createIcons();
+      }, 2200);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSlide(0);
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawzz Care — Practo for Animals | by Pawzz Foundation</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            },
+            emergency: {
+              50: '#fef2f2',
+              100: '#fee2e2',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .pulse-glow {
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .custom-scroll::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- Top Announcement / Triage Bar -->
+  <div class="bg-slate-900 text-slate-200 text-xs py-2 px-4 flex justify-between items-center border-b border-slate-800">
+    <div class="flex items-center gap-2 max-w-7xl mx-auto w-full justify-between">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-semibold">Live Beta</span>
+        <span>24/7 Verified Veterinary Network • 1,200+ Clinics across India</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4 text-slate-400">
+        <a href="#list-business-modal" onclick="openModal('listModal')" class="hover:text-emerald-400 transition-colors">Are you a Doctor? List Your Clinic</a>
+        <span>•</span>
+        <a href="javascript:void(0)" onclick="openModal('correctionModal')" class="hover:text-emerald-400 transition-colors">Submit Correction</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Navigation -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4 py-3">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-6">
+        <a href="#" class="flex items-center gap-2 group">
+          <div class="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-xs group-hover:bg-orange-700 transition">
+            <i data-lucide="paw-print" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl font-extrabold tracking-tight text-slate-900">Pawzz<span class="text-orange-600">Care</span></span>
+              <span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Pawzz Foundation</span>
+            </div>
+            <p class="text-[11px] text-slate-500 -mt-0.5 hidden sm:block">Practo for Animals • Rescues & Pets</p>
+          </div>
+        </a>
+
+        <!-- Location Dropdown Pill -->
+        <div class="relative hidden md:block">
+          <button id="locationBtn" onclick="toggleLocationDropdown()" class="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 rounded-lg border border-slate-200 transition-all">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span id="currentLocation">Gurgaon (Golf Course Road)</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+          </button>
+          
+          <div id="locationDropdown" class="hidden absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
+            <div class="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Detect Location</div>
+            <button onclick="setLocation('Current GPS Location (Auto-detected)')" class="w-full text-left px-3 py-2 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 flex items-center gap-2">
+              <i data-lucide="crosshair" class="w-3.5 h-3.5"></i> Use precise device location
+            </button>
+            <div class="px-3 pt-2 pb-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Top NCR Hubs (Pawzz Network)</div>
+            <button onclick="setLocation('Gurgaon (Golf Course Road)')" class="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 flex items-center justify-between">
+              <span>Gurgaon (Golf Course Rd / DLF)</span> <span class="text-[10px] text-emerald-600 font-bold">HQ Hub</span>
+            </button>
+            <button onclick="setLocation('Gurgaon (Sohna Road / Sec 49)')" class="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 flex items-center justify-between">
+              <span>Gurgaon (Sohna Road)</span> <span class="text-[10px] text-slate-400">120 Vets</span>
+            </button>
+            <button onclick="setLocation('South Delhi (Vasant Kunj)')" class="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 flex items-center justify-between">
+              <span>Delhi (South / Vasant Kunj)</span> <span class="text-[10px] text-slate-400">380 Vets</span>
+            </button>
+            <button onclick="setLocation('Noida (Sector 18 / 62)')" class="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 flex items-center justify-between">
+              <span>Noida / Greater Noida</span> <span class="text-[10px] text-slate-400">190 Vets</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action CTAs -->
+      <div class="flex items-center gap-3">
+        <!-- 24/7 Emergency SOS Button -->
+        <button onclick="toggleEmergencyMode()" id="sosToggleBtn" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-red-600 text-white hover:bg-red-700 shadow-md shadow-red-500/20 transition-all cursor-pointer">
+          <i data-lucide="ambulance" class="w-4 h-4 animate-bounce"></i>
+          <span>24/7 Emergency SOS</span>
+        </button>
+
+        <!-- List Business Button -->
+        <button onclick="openModal('listModal')" class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-200 transition-all">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-600"></i>
+          <span>List Your Clinic</span>
+        </button>
+
+        <!-- Profile / Saved -->
+        <button onclick="openModal('correctionModal')" class="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition" title="Submit Correction / Add Info">
+          <i data-lucide="flag" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Emergency Banner (Appears when Emergency Mode Activated) -->
+  <div id="emergencyAlertBanner" class="hidden bg-gradient-to-r from-red-600 to-rose-700 text-white py-3 px-4 shadow-lg border-b border-red-500 animate-fadeIn">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+      <div class="flex items-center gap-3">
+        <span class="w-3 h-3 rounded-full bg-white animate-ping"></span>
+        <span class="font-bold tracking-wide">EMERGENCY MODE ACTIVE:</span>
+        <span class="text-red-100">Showing 24/7 ICU Hospitals & Ambulances within 5km with immediate response times.</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="tel:1800123456" class="bg-white text-red-700 font-extrabold px-3 py-1.5 rounded-lg text-xs hover:bg-red-50 flex items-center gap-1.5 shadow">
+          <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> Toll-Free Vet Triage: 1800-VET-SOS
+        </a>
+        <button onclick="toggleEmergencyMode()" class="text-xs bg-red-800 hover:bg-red-900 px-3 py-1.5 rounded-lg">Exit Mode</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero & Omni-Search Section -->
+  <section class="relative bg-gradient-to-b from-emerald-50/60 via-teal-50/20 to-white pt-8 pb-10 border-b border-slate-200/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="max-w-3xl mx-auto text-center mb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-800 text-xs font-semibold mb-3">
+          <i data-lucide="heart" class="w-3.5 h-3.5 fill-emerald-600 text-emerald-600"></i>
+          Because Pets Are Family, And Strays Deserve Care
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          Find Trusted Doctors, 24/7 Care & Ambulances For Any Animal
+        </h1>
+        <p class="mt-3 text-slate-600 text-sm sm:text-base">
+          Instantly discover verified vet clinics, emergency ICUs, boarding kennels, labs, and rescue NGOs near you.
+        </p>
+      </div>
+
+      <!-- Main Omni-Search Box -->
+      <div class="max-w-4xl mx-auto bg-white p-2.5 sm:p-3 rounded-2xl shadow-xl shadow-slate-200/70 border border-slate-200">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
+          
+          <!-- Location Input -->
+          <div class="md:col-span-4 flex items-center px-3 py-2 bg-slate-50 hover:bg-slate-100/70 rounded-xl border border-slate-200/70 transition">
+            <i data-lucide="map-pin" class="w-4 h-4 text-emerald-600 mr-2 shrink-0"></i>
+            <div class="w-full">
+              <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Location</label>
+              <input type="text" id="searchLocation" value="Gurgaon (Golf Course Road / Sector 29)" placeholder="Enter locality or landmark" class="w-full bg-transparent text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Specialty / Query Input -->
+          <div class="md:col-span-5 flex items-center px-3 py-2 bg-slate-50 hover:bg-slate-100/70 rounded-xl border border-slate-200/70 transition">
+            <i data-lucide="search" class="w-4 h-4 text-emerald-600 mr-2 shrink-0"></i>
+            <div class="w-full">
+              <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Search Doctor, Clinic or Need</label>
+              <input type="text" id="searchQuery" oninput="filterProviders()" placeholder="e.g. Vaccination, Surgery, Blood Bank, Cat Grooming" class="w-full bg-transparent text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Search CTA Button -->
+          <div class="md:col-span-3 flex">
+            <button onclick="filterProviders()" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all">
+              <i data-lucide="search" class="w-4 h-4"></i>
+              <span>Find Services</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Quick Pet-Type Filter Pills inside search -->
+        <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2 text-xs">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-slate-400 font-semibold text-[11px] mr-1">Pet Type:</span>
+            <button onclick="setPetFilter('all')" class="pet-pill px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-medium transition" data-pet="all">All Animals</button>
+            <button onclick="setPetFilter('dog')" class="pet-pill px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition" data-pet="dog">🐕 Dogs</button>
+            <button onclick="setPetFilter('cat')" class="pet-pill px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition" data-pet="cat">🐈 Cats</button>
+            <button onclick="setPetFilter('exotic')" class="pet-pill px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition" data-pet="exotic">🦜 Birds & Exotics</button>
+            <button onclick="setPetFilter('stray')" class="pet-pill px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition" data-pet="stray">🐾 Stray & Rescue</button>
+          </div>
+
+          <div class="flex items-center gap-2 text-[11px] text-slate-500">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>100% Phone Verified Listings</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Service Category Grid -->
+      <div class="max-w-5xl mx-auto mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+        <button onclick="setCategoryFilter('all')" class="cat-card p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition text-center group cursor-pointer" data-cat="all">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition">
+            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+          </div>
+          <span class="block mt-2 text-xs font-bold text-slate-800">All Services</span>
+          <span class="text-[10px] text-slate-400">All options</span>
+        </button>
+
+        <button onclick="setCategoryFilter('vet')" class="cat-card p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition text-center group cursor-pointer" data-cat="vet">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
+            <i data-lucide="stethoscope" class="w-5 h-5"></i>
+          </div>
+          <span class="block mt-2 text-xs font-bold text-slate-800">Vet Clinics</span>
+          <span class="text-[10px] text-slate-400">General OPD</span>
+        </button>
+
+        <button onclick="setCategoryFilter('hospital')" class="cat-card p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition text-center group cursor-pointer" data-cat="hospital">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-red-50 text-red-600 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition">
+            <i data-lucide="cross" class="w-5 h-5"></i>
+          </div>
+          <span class="block mt-2 text-xs font-bold text-slate-800">24/7 Hospitals</span>
+          <span class="text-[10px] text-slate-400">ICU & Surgeries</span>
+        </button>
+
+        <button onclick="setCategoryFilter('ambulance')" class="cat-card p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition text-center group cursor-pointer" data-cat="ambulance">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition">
+            <i data-lucide="truck" class="w-5 h-5"></i>
+          </div>
+          <span class="block mt-2 text-xs font-bold text-slate-800">Ambulances</span>
+          <span class="text-[10px] text-slate-400">Emergency transit</span>
+        </button>
+
+        <button onclick="setCategoryFilter('boarding')" class="cat-card p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition text-center group cursor-pointer" data-cat="boarding">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+            <i data-lucide="home" class="w-5 h-5"></i>
+          </div>
+          <span class="block mt-2 text-xs font-bold text-slate-800">Boarding</span>
+          <span class="text-[10px] text-slate-400">Daycare & stay</span>
+        </button>
+
+        <button onclick="setCategoryFilter('ngo')" class="cat-card p-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md transition text-center group cursor-pointer" data-cat="ngo">
+          <div class="w-10 h-10 mx-auto rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition">
+            <i data-lucide="hand-heart" class="w-5 h-5"></i>
+          </div>
+          <span class="block mt-2 text-xs font-bold text-slate-800">Shelters & NGOs</span>
+          <span class="text-[10px] text-slate-400">Rescue & free care</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Main Search Results & Discovery Feed -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- Filter Bar & Sorting Row -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-200">
+      
+      <!-- Results Count & Active Tags -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <h2 class="text-lg font-bold text-slate-900">
+          Showing <span id="resultsCount" class="text-emerald-600 font-extrabold">6</span> Verified Animal Care Providers
+        </h2>
+        <span class="text-slate-300">|</span>
+        <span class="text-xs text-slate-500 font-medium">Near Koramangala (within 8 km)</span>
+      </div>
+
+      <!-- Quick Functional Toggles (Emergency, Verified, Open Now) -->
+      <div class="flex items-center gap-2 flex-wrap text-xs">
+        <!-- Open Now Toggle -->
+        <button id="openNowFilter" onclick="toggleOpenNow()" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-semibold text-slate-700 flex items-center gap-1.5 transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Open Now Only</span>
+        </button>
+
+        <!-- Home Visit Toggle -->
+        <button id="homeVisitFilter" onclick="toggleHomeVisit()" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-semibold text-slate-700 flex items-center gap-1.5 transition">
+          <i data-lucide="car" class="w-3.5 h-3.5 text-slate-500"></i>
+          <span>Home Visits</span>
+        </button>
+
+        <!-- Sort Select -->
+        <div class="relative">
+          <select id="sortBy" onchange="filterProviders()" class="appearance-none px-3 py-1.5 pr-8 rounded-lg border border-slate-200 bg-white text-slate-700 font-semibold text-xs focus:outline-none focus:border-emerald-500">
+            <option value="distance">Sort by: Nearest First</option>
+            <option value="rating">Sort by: Highest Rated (4.8+)</option>
+            <option value="fee-asc">Sort by: Fee (Low to High)</option>
+          </select>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none"></i>
+        </div>
+
+        <!-- View Mode (List / Map simulation) -->
+        <div class="flex border border-slate-200 rounded-lg p-0.5 bg-slate-100">
+          <button id="viewListBtn" onclick="toggleView('list')" class="px-2.5 py-1 rounded-md bg-white shadow-xs text-slate-900 font-semibold text-xs flex items-center gap-1">
+            <i data-lucide="list" class="w-3.5 h-3.5"></i> List
+          </button>
+          <button id="viewMapBtn" onclick="toggleView('map')" class="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 font-semibold text-xs flex items-center gap-1">
+            <i data-lucide="map" class="w-3.5 h-3.5"></i> Map View
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Layout Container: Left Listings, Right Sticky Quick-Action Card / Map Preview -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Provider Cards Feed (8 Cols) -->
+      <div class="lg:col-span-8 space-y-4" id="providersList">
+        <!-- Providers dynamically rendered via JavaScript -->
+      </div>
+
+      <!-- Right Column: Sidebar (4 Cols) - Sticky Emergency SOS Card & Community Widget -->
+      <div class="lg:col-span-4 space-y-6">
+        
+        <!-- Emergency Triage Card -->
+        <div class="bg-gradient-to-br from-red-500 to-rose-700 rounded-2xl p-5 text-white shadow-xl shadow-red-500/20 relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-full bg-white/20 text-white font-extrabold text-[11px] tracking-wide uppercase">24/7 Red Alert</span>
+            <i data-lucide="alert-octagon" class="w-6 h-6 text-white/90"></i>
+          </div>
+          <h3 class="text-lg font-bold">Animal In Critical Distress?</h3>
+          <p class="text-xs text-red-100 mt-1 leading-relaxed">
+            Severe trauma, poisoning, hit-and-run, or breathing failure? Connect directly to nearest active trauma ICU.
+          </p>
+          <div class="mt-4 pt-3 border-t border-white/20 flex flex-col gap-2">
+            <a href="tel:+919876543210" class="w-full bg-white text-red-700 hover:bg-red-50 font-extrabold py-2.5 px-3 rounded-xl text-center text-xs shadow flex items-center justify-center gap-2 transition">
+              <i data-lucide="phone-call" class="w-4 h-4"></i> Call Emergency Ambulance (10 min away)
+            </a>
+            <button onclick="openModal('triageGuideModal')" class="w-full bg-red-800/80 hover:bg-red-900 text-white font-semibold py-2 px-3 rounded-xl text-center text-xs flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i> First-Aid & Poisoning Guide
+            </button>
+          </div>
+        </div>
+
+        <!-- B2B Supply Acquisition Card (List Your Business) -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
+            <i data-lucide="stethoscope" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-900">Are You A Veterinarian or Pet Care Specialist?</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            Partner with Pawzz Foundation's nationwide network of doctors, diagnostic labs, and animal hospitals. Get discovered by verified pet parents with zero platform commissions during beta.
+          </p>
+          <ul class="mt-3 space-y-1.5 text-xs text-slate-600">
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Direct WhatsApp appointment booking
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Free digital clinic profile & map listing
+            </li>
+            <li class="flex items-center gap-2">
+              <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Verified badge & patient review tools
+            </li>
+          </ul>
+          <button onclick="openModal('listModal')" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm transition">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>List Your Clinic for Free</span>
+          </button>
+        </div>
+
+        <!-- Crowdsourcing & Correction Card -->
+        <div class="bg-slate-100 rounded-2xl p-5 border border-slate-200 text-slate-700">
+          <div class="flex items-center gap-2 text-xs font-bold text-slate-900 mb-1">
+            <i data-lucide="map-pin-off" class="w-4 h-4 text-slate-500"></i>
+            <span>Help Us Keep Data 100% Accurate</span>
+          </div>
+          <p class="text-xs text-slate-500">
+            Did a clinic change timings or close down? Know of an unsung stray feeder or animal NGO in your sector?
+          </p>
+          <button onclick="openModal('correctionModal')" class="mt-3 text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5">
+            <span>Submit a correction or add new listing</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Simulated Interactive Map View (Hidden by default, shown when toggled) -->
+    <div id="mapViewContainer" class="hidden mt-6 bg-slate-900 rounded-2xl p-6 text-white border border-slate-800 shadow-xl relative overflow-hidden">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-lg font-bold flex items-center gap-2">
+            <i data-lucide="map" class="w-5 h-5 text-emerald-400"></i>
+            Interactive Map Radar — Bengaluru South Cluster
+          </h3>
+          <p class="text-xs text-slate-400">Real-time GPS proximity visualization for emergency response</p>
+        </div>
+        <button onclick="toggleView('list')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold">
+          Back to List View
+        </button>
+      </div>
+
+      <!-- Simulated Visual Map Canvas -->
+      <div class="h-96 w-full bg-slate-800/80 rounded-xl relative border border-slate-700 overflow-hidden flex items-center justify-center">
+        <!-- Map Grid Lines Background -->
+        <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-70"></div>
+        
+        <!-- User Location Center Pin -->
+        <div class="absolute z-20 flex flex-col items-center">
+          <span class="w-4 h-4 rounded-full bg-blue-500 ring-4 ring-blue-500/30 animate-pulse"></span>
+          <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow mt-1">You Are Here (Koramangala)</span>
+        </div>
+
+        <!-- Pin 1: 24/7 ICU -->
+        <div class="absolute top-1/4 left-1/3 z-20 flex flex-col items-center cursor-pointer hover:scale-110 transition" onclick="selectProvider(1)">
+          <div class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg ring-2 ring-red-400">
+            <i data-lucide="cross" class="w-3 h-3"></i> Care24 Vet ICU (1.2 km)
+          </div>
+        </div>
+
+        <!-- Pin 2: Dr. Rao -->
+        <div class="absolute bottom-1/3 left-1/4 z-20 flex flex-col items-center cursor-pointer hover:scale-110 transition" onclick="selectProvider(2)">
+          <div class="bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
+            <i data-lucide="stethoscope" class="w-3 h-3"></i> Pawsitive Care Clinic (2.4 km)
+          </div>
+        </div>
+
+        <!-- Pin 3: Pet Ambulance -->
+        <div class="absolute top-1/3 right-1/4 z-20 flex flex-col items-center cursor-pointer hover:scale-110 transition" onclick="selectProvider(3)">
+          <div class="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg animate-bounce">
+            <i data-lucide="truck" class="w-3 h-3"></i> RapidPet Ambulance (0.8 km)
+          </div>
+        </div>
+
+        <!-- Pin 4: NGO Shelter -->
+        <div class="absolute bottom-1/4 right-1/3 z-20 flex flex-col items-center cursor-pointer hover:scale-110 transition" onclick="selectProvider(6)">
+          <div class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
+            <i data-lucide="hand-heart" class="w-3 h-3"></i> Compassion Stray Sanctuary (4.8 km)
+          </div>
+        </div>
+
+        <div class="absolute bottom-4 left-4 z-20 bg-slate-900/90 backdrop-blur px-3 py-2 rounded-lg text-[11px] text-slate-300 border border-slate-700">
+          💡 Click any map pin to inspect provider details & launch 1-tap route.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL 1: Book Appointment Modal -->
+  <div id="bookingModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Fast-Track Appointment</span>
+          <h3 id="bookingModalTitle" class="text-lg font-bold text-slate-900">Book Doctor Consultation</h3>
+        </div>
+        <button onclick="closeModal('bookingModal')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="mt-4 space-y-4">
+        <!-- Selected Clinic Info -->
+        <div id="selectedClinicSummary" class="p-3 bg-emerald-50 rounded-xl text-xs text-emerald-900 flex items-center justify-between">
+          <div>
+            <p class="font-bold" id="modalClinicName">Care24 Animal Multi-Specialty Hospital</p>
+            <p class="text-emerald-700 text-[11px]" id="modalClinicFee">Consultation Fee: ₹650 • Pay at clinic</p>
+          </div>
+          <span class="bg-emerald-200/70 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded">Confirmed Slot</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Select Pet Type</label>
+          <div class="grid grid-cols-4 gap-2 text-xs">
+            <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-emerald-500 has-checked:border-emerald-600 has-checked:bg-emerald-50 font-medium">
+              <input type="radio" name="bookingPet" value="Dog" class="sr-only" checked> 🐕 Dog
+            </label>
+            <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-emerald-500 has-checked:border-emerald-600 has-checked:bg-emerald-50 font-medium">
+              <input type="radio" name="bookingPet" value="Cat" class="sr-only"> 🐈 Cat
+            </label>
+            <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-emerald-500 has-checked:border-emerald-600 has-checked:bg-emerald-50 font-medium">
+              <input type="radio" name="bookingPet" value="Bird" class="sr-only"> 🦜 Bird
+            </label>
+            <label class="border border-slate-200 rounded-lg p-2 text-center cursor-pointer hover:border-emerald-500 has-checked:border-emerald-600 has-checked:bg-emerald-50 font-medium">
+              <input type="radio" name="bookingPet" value="Stray" class="sr-only"> 🐾 Stray
+            </label>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Preferred Date</label>
+            <input type="date" required id="bookingDate" value="2026-11-19" class="w-full text-xs font-semibold p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Time Slot</label>
+            <select class="w-full text-xs font-semibold p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+              <option>10:00 AM - 11:00 AM</option>
+              <option>11:30 AM - 12:30 PM</option>
+              <option>04:00 PM - 05:00 PM</option>
+              <option>06:30 PM - 07:30 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Primary Concern / Symptoms</label>
+          <input type="text" required placeholder="e.g. Vomiting since morning, limping, regular vaccination" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Parent's Name</label>
+            <input type="text" required placeholder="Your full name" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number (For SMS/WhatsApp)</label>
+            <input type="tel" required placeholder="+91 98765 43210" class="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span>Confirm Instant Booking (Free Cancellation)</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: List Your Business Modal (Supply-Side Acquisition) -->
+  <div id="listModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Partner With Pawzz Foundation</span>
+          <h3 class="text-lg font-bold text-slate-900">List Your Veterinary Clinic or Service</h3>
+        </div>
+        <button onclick="closeModal('listModal')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleListSubmit(event)" class="mt-4 space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Practice / Facility Name</label>
+          <input type="text" required placeholder="e.g. Apex Pet Hospital & Diagnostic Centre" class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Category Type</label>
+            <select class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 font-medium">
+              <option>Veterinary Clinic</option>
+              <option>24/7 Multi-Specialty Hospital</option>
+              <option>Animal Ambulance Service</option>
+              <option>Pet Boarding & Daycare</option>
+              <option>Diagnostics & Blood Bank</option>
+              <option>Animal Welfare NGO / Shelter</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Veterinary Council Reg. No.</label>
+            <input type="text" placeholder="VCI-XXXX-XXXX" class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">City & Locality</label>
+            <input type="text" required placeholder="e.g. Indiranagar, Bengaluru" class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Direct Contact Phone</label>
+            <input type="tel" required placeholder="+91 98000 00000" class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Services & Facilities Offered</label>
+          <div class="grid grid-cols-2 gap-2 text-slate-700">
+            <label class="flex items-center gap-1.5"><input type="checkbox" checked class="rounded text-emerald-600"> 24/7 Emergency Care</label>
+            <label class="flex items-center gap-1.5"><input type="checkbox" checked class="rounded text-emerald-600"> Surgery & Orthopedics</label>
+            <label class="flex items-center gap-1.5"><input type="checkbox" class="rounded text-emerald-600"> Pet Inpatient / ICU</label>
+            <label class="flex items-center gap-1.5"><input type="checkbox" class="rounded text-emerald-600"> Home Visit Service</label>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Submit for Verification (Verified in 24 hrs)</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Submit a Correction / Crowdsource Modal -->
+  <div id="correctionModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Community Verification</span>
+          <h3 class="text-lg font-bold text-slate-900">Submit a Correction or Missing Place</h3>
+        </div>
+        <button onclick="closeModal('correctionModal')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCorrectionSubmit(event)" class="mt-4 space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Issue Type</label>
+          <select class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 font-medium">
+            <option>Phone Number is Incorrect / Unreachable</option>
+            <option>Clinic is Permanently Closed / Relocated</option>
+            <option>Timings or 24/7 Emergency status is wrong</option>
+            <option>Add a New Stray Shelter / Free Animal Clinic</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Clinic Name or Address</label>
+          <input type="text" required placeholder="Name of the hospital / location" class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Details & Corrected Info</label>
+          <textarea rows="3" required placeholder="Please provide the correct phone number, new timings, or notes..." class="w-full p-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Submit Community Feedback</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Triage First-Aid Guide Modal -->
+  <div id="triageGuideModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-red-600 flex items-center gap-2">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+          Emergency First-Aid Quick Protocols
+        </h3>
+        <button onclick="closeModal('triageGuideModal')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3 text-xs text-slate-700">
+        <div class="p-3 bg-red-50 rounded-xl border border-red-100">
+          <h4 class="font-bold text-red-900">🚨 Suspected Poisoning (Chocolate, Rat Poison, Lilies)</h4>
+          <p class="mt-1 text-slate-600">Do NOT induce vomiting without consulting a vet. Take a photo of the toxin container and immediately drive to 24/7 ICU.</p>
+        </div>
+
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-100">
+          <h4 class="font-bold text-amber-900">🩹 Bleeding & Vehicular Trauma</h4>
+          <p class="mt-1 text-slate-600">Apply direct, firm pressure with a clean cloth. Keep the animal warm and still to avoid shock. Do not twist the spine during transit.</p>
+        </div>
+
+        <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
+          <h4 class="font-bold text-blue-900">☀️ Heatstroke & Panting Distress</h4>
+          <p class="mt-1 text-slate-600">Move into air conditioning immediately. Wet paw pads and belly with room-temperature water (never ice water). Offer small sips of water.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 transition-all">
+    <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+      <i data-lucide="check" class="w-4 h-4"></i>
+    </div>
+    <div>
+      <h4 class="text-xs font-bold" id="toastTitle">Success!</h4>
+      <p class="text-[11px] text-slate-300" id="toastMessage">Action completed successfully.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-md bg-orange-600 text-white flex items-center justify-center font-bold text-[10px]">PZ</div>
+        <span class="font-bold text-slate-800">Pawzz Care — by Pawzz Foundation</span>
+        <span>• Practo for Animals MVP Prototype</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-500">
+        <a href="javascript:void(0)" onclick="openModal('listModal')" class="hover:text-emerald-600">List Clinic</a>
+        <a href="javascript:void(0)" onclick="openModal('correctionModal')" class="hover:text-emerald-600">Submit Correction</a>
+        <a href="javascript:void(0)" onclick="toggleEmergencyMode()" class="hover:text-red-600 font-bold">24/7 Red Alert</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mock Database & Interactive Logic -->
+  <script>
+    // Data store for providers
+    const providers = [
+      {
+        id: 1,
+        name: "Care24 Animal Multi-Specialty Hospital & Trauma ICU",
+        doctor: "Dr. Ananya Sharma (BVSc & AH, MVSc Surgery - 14 yrs)",
+        category: "hospital",
+        pets: ["dog", "cat", "exotic", "stray"],
+        is247: true,
+        isOpenNow: true,
+        homeVisit: false,
+        verified: true,
+        rating: 4.9,
+        reviewsCount: 384,
+        distanceKm: 1.2,
+        area: "DLF Phase 4, Gurgaon",
+        fee: 650,
+        phone: "+919876543210",
+        emergencyBadge: "⚡ 24/7 ICU & Oxygen Available",
+        services: ["Trauma Surgery", "Digital X-Ray", "Blood Bank", "Inpatient Ward"],
+        image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 2,
+        name: "Pawsitive Care Veterinary Clinic & Dental Lab",
+        doctor: "Dr. Rajiv Menon (Gold Medalist VCI - 9 yrs)",
+        category: "vet",
+        pets: ["dog", "cat"],
+        is247: false,
+        isOpenNow: true,
+        homeVisit: true,
+        verified: true,
+        rating: 4.8,
+        reviewsCount: 219,
+        distanceKm: 2.4,
+        area: "Sector 56, Golf Course Ext Road, Gurgaon",
+        fee: 500,
+        phone: "+919876543211",
+        emergencyBadge: "🏠 Home Visits Available Today",
+        services: ["Vaccinations", "Dental Scaling", "Deworming", "General OPD"],
+        image: "https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=400&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 3,
+        name: "RapidPet 24/7 Animal Ambulance & Mobile Vet",
+        doctor: "Paramedic Unit Lead: Rajesh Kumar",
+        category: "ambulance",
+        pets: ["dog", "cat", "exotic", "stray"],
+        is247: true,
+        isOpenNow: true,
+        homeVisit: true,
+        verified: true,
+        rating: 4.9,
+        reviewsCount: 167,
+        distanceKm: 0.8,
+        area: "Cyber Hub Base, Gurgaon (ETA 10 mins)",
+        fee: 800,
+        phone: "+919876543212",
+        emergencyBadge: "🚑 Stretcher & Oxygen Onboard",
+        services: ["Emergency Transport", "On-spot Stabilization", "Strays Free Triage"],
+        image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 4,
+        name: "Bark & Purr Luxury Pet Resort & Medical Boarding",
+        doctor: "Vet-Supervised Boarding by Dr. Priya Rao",
+        category: "boarding",
+        pets: ["dog", "cat"],
+        is247: false,
+        isOpenNow: true,
+        homeVisit: false,
+        verified: true,
+        rating: 4.7,
+        reviewsCount: 142,
+        distanceKm: 3.8,
+        area: "Sohna Road, Gurgaon",
+        fee: 950,
+        phone: "+919876543213",
+        emergencyBadge: "🩺 24/7 Resident Vet On-Campus",
+        services: ["AC Suites", "Medicated Grooming", "Post-Surgery Foster", "CCTV Access"],
+        image: "https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=400&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 5,
+        name: "Avian & Exotic Wildlife Specialty Care",
+        doctor: "Dr. Vikram Seth (Specialist in Birds, Reptiles & Small Mammals)",
+        category: "vet",
+        pets: ["exotic"],
+        is247: false,
+        isOpenNow: false,
+        homeVisit: false,
+        verified: true,
+        rating: 4.9,
+        reviewsCount: 96,
+        distanceKm: 5.1,
+        area: "Vasant Kunj, South Delhi (Near Gurgaon Border)",
+        fee: 700,
+        phone: "+919876543214",
+        emergencyBadge: "🦜 Certified Exotics Specialist",
+        services: ["Bird Beak/Feather Triage", "Reptile Habitat Consult", "Endoscopy"],
+        image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=400&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 6,
+        name: "Pawzz Animal Welfare Sanctuary & Stray Hospital",
+        doctor: "Chief Surgeon: Dr. Farhan Akhtar & Pawzz Rescue Team",
+        category: "ngo",
+        pets: ["stray", "dog", "cat"],
+        is247: true,
+        isOpenNow: true,
+        homeVisit: true,
+        verified: true,
+        rating: 4.9,
+        reviewsCount: 512,
+        distanceKm: 4.8,
+        area: "Sector 34 Rescue Campus, Gurgaon",
+        fee: 0,
+        phone: "+919876543215",
+        emergencyBadge: "💚 Free OPD & ABC for Rescued Strays",
+        services: ["Free Stray Sterilization (ABC)", "Parvo Recovery Ward", "Adoptions", "Hit & Run Rescue"],
+        image: "https://images.unsplash.com/photo-1534361960057-19889db98a1e?w=400&auto=format&fit=crop&q=80"
+      }
+    ];
+
+    // State
+    let currentCategory = 'all';
+    let currentPet = 'all';
+    let isEmergencyOnly = false;
+    let isOpenNowOnly = false;
+    let isHomeVisitOnly = false;
+    let selectedProviderForBooking = null;
+
+    // Render Function
+    function renderProviders(list) {
+      const container = document.getElementById('providersList');
+      const countEl = document.getElementById('resultsCount');
+      countEl.innerText = list.length;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-12 text-center border border-slate-200">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 mb-4">
+              <i data-lucide="search-x" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">No matching care providers found</h3>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Try resetting filters or expanding search radius. In emergency situations, switch on 24/7 SOS.</p>
+            <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold">Reset All Filters</button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = list.map(p => `
+        <article class="bg-white rounded-2xl border ${p.is247 ? 'border-red-200/80 hover:border-red-400' : 'border-slate-200 hover:border-emerald-400'} p-4 sm:p-5 shadow-xs hover:shadow-md transition-all group">
+          <div class="flex flex-col sm:flex-row gap-4 items-start">
+            
+            <!-- Thumbnail & Rating -->
+            <div class="relative w-full sm:w-36 h-36 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+              <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-extrabold shadow ${p.isOpenNow ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-slate-200'}">
+                ${p.isOpenNow ? '● OPEN NOW' : 'CLOSED'}
+              </span>
+              ${p.is247 ? `
+                <span class="absolute bottom-2 left-2 right-2 bg-red-600/95 text-white text-[9px] font-extrabold text-center py-0.5 rounded shadow">
+                  24/7 EMERGENCY
+                </span>
+              ` : ''}
+            </div>
+
+            <!-- Content Details -->
+            <div class="flex-1 min-w-0">
+              
+              <!-- Top Row: Verified Badge & Fee -->
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <h3 class="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition">
+                      ${p.name}
+                    </h3>
+                    ${p.verified ? `
+                      <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200" title="Verified by Pawzz Foundation Inspection">
+                        <i data-lucide="check" class="w-3 h-3"></i> Verified
+                      </span>
+                    ` : ''}
+                  </div>
+                  <p class="text-xs font-semibold text-slate-600 mt-0.5 flex items-center gap-1">
+                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-slate-400"></i>
+                    ${p.doctor}
+                  </p>
+                </div>
+
+                <!-- Fee Badge -->
+                <div class="text-right shrink-0">
+                  <span class="text-sm font-extrabold text-slate-900">${p.fee === 0 ? '<span class="text-emerald-600">FREE (NGO)</span>' : '₹' + p.fee}</span>
+                  <p class="text-[10px] text-slate-400 font-medium">${p.fee === 0 ? 'Donor funded' : 'Consultation'}</p>
+                </div>
+              </div>
+
+              <!-- Badges / Perks -->
+              <div class="mt-2 flex items-center gap-2 flex-wrap text-[11px]">
+                <span class="inline-flex items-center gap-1 text-amber-500 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">
+                  <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i>
+                  ${p.rating} <span class="text-slate-400 font-normal">(${p.reviewsCount} reviews)</span>
+                </span>
+                <span class="text-slate-600 font-medium flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400"></i>
+                  ${p.area} • <strong class="text-slate-800">${p.distanceKm} km</strong>
+                </span>
+                <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                  ${p.emergencyBadge}
+                </span>
+              </div>
+
+              <!-- Tags / Specialties -->
+              <div class="mt-2.5 flex items-center gap-1.5 flex-wrap">
+                ${p.services.map(s => `
+                  <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium">
+                    ${s}
+                  </span>
+                `).join('')}
+              </div>
+
+              <!-- Bottom Actions Bar -->
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  <a href="tel:${p.phone}" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-600"></i>
+                    <span>Call Now</span>
+                  </a>
+                  <a href="https://maps.google.com" target="_blank" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition">
+                    <i data-lucide="navigation" class="w-3.5 h-3.5 text-blue-600"></i>
+                    <span>Directions</span>
+                  </a>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button onclick="openBookingModal(${p.id})" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm hover:shadow flex items-center gap-1.5 transition">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                    <span>Book Appointment</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </article>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    // Filter Logic
+    function filterProviders() {
+      const q = document.getElementById('searchQuery').value.toLowerCase().trim();
+      const sort = document.getElementById('sortBy').value;
+
+      let filtered = providers.filter(p => {
+        // Category
+        if (currentCategory !== 'all' && p.category !== currentCategory) return false;
+        // Pet Type
+        if (currentPet !== 'all' && !p.pets.includes(currentPet)) return false;
+        // Emergency Only
+        if (isEmergencyOnly && !p.is247) return false;
+        // Open Now Only
+        if (isOpenNowOnly && !p.isOpenNow) return false;
+        // Home Visit Only
+        if (isHomeVisitOnly && !p.homeVisit) return false;
+        // Query match
+        if (q) {
+          const matchName = p.name.toLowerCase().includes(q);
+          const matchDoc = p.doctor.toLowerCase().includes(q);
+          const matchArea = p.area.toLowerCase().includes(q);
+          const matchServices = p.services.some(s => s.toLowerCase().includes(q));
+          if (!matchName && !matchDoc && !matchArea && !matchServices) return false;
+        }
+        return true;
+      });
+
+      // Sorting
+      if (sort === 'distance') {
+        filtered.sort((a, b) => a.distanceKm - b.distanceKm);
+      } else if (sort === 'rating') {
+        filtered.sort((a, b) => b.rating - a.rating);
+      } else if (sort === 'fee-asc') {
+        filtered.sort((a, b) => a.fee - b.fee);
+      }
+
+      renderProviders(filtered);
+    }
+
+    // Category Selector
+    function setCategoryFilter(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-card').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.classList.add('border-emerald-600', 'bg-emerald-50/40', 'ring-2', 'ring-emerald-500/20');
+        } else {
+          btn.classList.remove('border-emerald-600', 'bg-emerald-50/40', 'ring-2', 'ring-emerald-500/20');
+        }
+      });
+      filterProviders();
+    }
+
+    // Pet Filter
+    function setPetFilter(pet) {
+      currentPet = pet;
+      document.querySelectorAll('.pet-pill').forEach(btn => {
+        if (btn.dataset.pet === pet) {
+          btn.classList.remove('bg-slate-100', 'text-slate-700');
+          btn.classList.add('bg-emerald-600', 'text-white');
+        } else {
+          btn.classList.remove('bg-emerald-600', 'text-white');
+          btn.classList.add('bg-slate-100', 'text-slate-700');
+        }
+      });
+      filterProviders();
+    }
+
+    // Emergency Toggle
+    function toggleEmergencyMode() {
+      isEmergencyOnly = !isEmergencyOnly;
+      const banner = document.getElementById('emergencyAlertBanner');
+      const sosBtn = document.getElementById('sosToggleBtn');
+
+      if (isEmergencyOnly) {
+        banner.classList.remove('hidden');
+        sosBtn.classList.add('pulse-glow', 'ring-4', 'ring-red-400');
+        sosBtn.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4"></i> Emergency Active`;
+        showToast("🚨 Emergency Mode ON", "Displaying 24/7 ICU & Ambulances within 5km.");
+      } else {
+        banner.classList.add('hidden');
+        sosBtn.classList.remove('pulse-glow', 'ring-4', 'ring-red-400');
+        sosBtn.innerHTML = `<i data-lucide="ambulance" class="w-4 h-4"></i> 24/7 Emergency SOS`;
+        showToast("Standard Mode", "Displaying all scheduled & OPD care services.");
+      }
+      lucide.createIcons();
+      filterProviders();
+    }
+
+    function toggleOpenNow() {
+      isOpenNowOnly = !isOpenNowOnly;
+      const btn = document.getElementById('openNowFilter');
+      btn.classList.toggle('bg-emerald-50');
+      btn.classList.toggle('border-emerald-400');
+      btn.classList.toggle('text-emerald-800');
+      filterProviders();
+    }
+
+    function toggleHomeVisit() {
+      isHomeVisitOnly = !isHomeVisitOnly;
+      const btn = document.getElementById('homeVisitFilter');
+      btn.classList.toggle('bg-emerald-50');
+      btn.classList.toggle('border-emerald-400');
+      btn.classList.toggle('text-emerald-800');
+      filterProviders();
+    }
+
+    function toggleView(mode) {
+      const listContainer = document.getElementById('providersList');
+      const mapContainer = document.getElementById('mapViewContainer');
+      const listBtn = document.getElementById('viewListBtn');
+      const mapBtn = document.getElementById('viewMapBtn');
+
+      if (mode === 'map') {
+        mapContainer.classList.remove('hidden');
+        listContainer.classList.add('hidden');
+        mapBtn.classList.add('bg-white', 'shadow-xs', 'text-slate-900');
+        listBtn.classList.remove('bg-white', 'shadow-xs', 'text-slate-900');
+      } else {
+        mapContainer.classList.add('hidden');
+        listContainer.classList.remove('hidden');
+        listBtn.classList.add('bg-white', 'shadow-xs', 'text-slate-900');
+        mapBtn.classList.remove('bg-white', 'shadow-xs', 'text-slate-900');
+      }
+    }
+
+    function resetFilters() {
+      currentCategory = 'all';
+      currentPet = 'all';
+      isEmergencyOnly = false;
+      isOpenNowOnly = false;
+      isHomeVisitOnly = false;
+      document.getElementById('searchQuery').value = '';
+      setCategoryFilter('all');
+      setPetFilter('all');
+      filterProviders();
+    }
+
+    // Modal Handlers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function openBookingModal(providerId) {
+      const p = providers.find(item => item.id === providerId);
+      if (!p) return;
+      selectedProviderForBooking = p;
+      document.getElementById('modalClinicName').innerText = p.name;
+      document.getElementById('modalClinicFee').innerText = `Consultation Fee: ${p.fee === 0 ? 'FREE (NGO)' : '₹' + p.fee} • Pay at clinic`;
+      openModal('bookingModal');
+    }
+
+    function selectProvider(id) {
+      toggleView('list');
+      openBookingModal(id);
+    }
+
+    function handleBookingSubmit(e) {
+      e.preventDefault();
+      closeModal('bookingModal');
+      showToast("Appointment Booked! 🎉", "SMS & WhatsApp confirmation sent with directions.");
+    }
+
+    function handleListSubmit(e) {
+      e.preventDefault();
+      closeModal('listModal');
+      showToast("Application Submitted! 📋", "Our team will verify documents within 24 hours.");
+    }
+
+    function handleCorrectionSubmit(e) {
+      e.preventDefault();
+      closeModal('correctionModal');
+      showToast("Thank You! 💚", "Your correction is under community review.");
+    }
+
+    function showToast(title, msg) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastTitle').innerText = title;
+      document.getElementById('toastMessage').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+      lucide.createIcons();
+    }
+
+    function toggleLocationDropdown() {
+      document.getElementById('locationDropdown').classList.toggle('hidden');
+    }
+
+    function setLocation(loc) {
+      document.getElementById('currentLocation').innerText = loc;
+      document.getElementById('searchLocation').value = loc;
+      toggleLocationDropdown();
+      showToast("Location Updated", `Showing nearest services around ${loc}`);
+    }
+
+    // Initial render
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderProviders(providers);
+    });
+  </script>
+</body>
+</html>

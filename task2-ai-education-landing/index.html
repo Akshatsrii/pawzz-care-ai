@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawzz AI Academy — Practical Systems Fellowship</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            orange: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    }
+    .hover-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -4px rgba(234, 88, 12, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+
+  <!-- Top Notification Bar -->
+  <div class="bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/20 text-orange-400 border border-orange-500/30">Cohort 04</span>
+        <span class="text-slate-300">Live weekend build sessions • <strong>12 seats remaining</strong> out of 30</span>
+      </div>
+      <div class="flex items-center gap-3 text-slate-400">
+        <span>Curated by Pawzz Foundation</span>
+        <span>•</span>
+        <a href="#curriculum" class="text-orange-400 hover:text-orange-300 font-medium">Explore Syllabus</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between py-3">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-sm group-hover:bg-orange-700 transition">
+          <i data-lucide="layers" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-lg font-extrabold tracking-tight text-slate-900">Pawzz<span class="text-orange-600">AI</span></span>
+            <span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-1.5 py-0.5 rounded">Academy</span>
+          </div>
+          <p class="text-[11px] text-slate-500 -mt-0.5 hidden sm:block">Practical Systems Fellowship</p>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex items-center gap-7 text-xs font-semibold text-slate-600">
+        <a href="#curriculum" class="hover:text-orange-600 transition">Curriculum</a>
+        <a href="#projects" class="hover:text-orange-600 transition">Projects You Build</a>
+        <a href="#comparison" class="hover:text-orange-600 transition">Why Practical AI?</a>
+        <a href="#pricing" class="hover:text-orange-600 transition">Tuition</a>
+        <a href="#faqs" class="hover:text-orange-600 transition">FAQs</a>
+      </nav>
+
+      <!-- Nav CTA -->
+      <div class="flex items-center gap-3">
+        <button onclick="openLeadModal('syllabus')" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-orange-700 bg-slate-100 hover:bg-orange-50 border border-slate-200 transition">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 text-orange-600"></i>
+          <span>Get Syllabus</span>
+        </button>
+
+        <button onclick="openLeadModal('apply')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-orange-600 hover:bg-orange-700 text-white shadow-sm transition">
+          <span>Apply for Seat</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Hero Section (Light & Crisp White/Orange) -->
+  <section class="relative pt-12 pb-16 bg-gradient-to-b from-orange-50/50 via-white to-white border-b border-slate-200/70">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+      
+      <!-- Announcement Tag -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-100/80 border border-orange-200 text-orange-900 text-xs font-semibold mb-6">
+        <span class="w-2 h-2 rounded-full bg-orange-600"></span>
+        <span>A 4-Week Build & Ship Fellowship for Ambitious Builders</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight max-w-4xl mx-auto leading-[1.18]">
+        Stop Memorizing AI Prompts.<br>
+        <span class="text-orange-600">Build Production Workflows & AI MVPs</span> That Work.
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="mt-5 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+        Join a selective 30-member cohort. Master <strong class="text-slate-900 font-semibold">n8n, Claude 3.7 API schemas, intelligent WhatsApp agents & full-stack MVPs</strong>. Graduate with 4 shipped projects in your portfolio.
+      </p>
+
+      <!-- Primary Action Buttons -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
+        <button onclick="openLeadModal('apply')" class="w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm font-bold bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-600/20 flex items-center justify-center gap-2 transition cursor-pointer">
+          <span>Apply for Cohort 04 (Reserve Seat)</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+
+        <button onclick="openLeadModal('syllabus')" class="w-full sm:w-auto px-6 py-3.5 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 flex items-center justify-center gap-2 transition cursor-pointer shadow-xs">
+          <i data-lucide="download" class="w-4 h-4 text-orange-600"></i>
+          <span>Download Free Syllabus & 15+ n8n Blueprints</span>
+        </button>
+      </div>
+
+      <!-- Metrics Row (Clean White Cards) -->
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-8 border-t border-slate-200/80 text-left">
+        <div class="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="text-2xl font-extrabold text-slate-900">4 Weeks</div>
+          <div class="text-xs text-slate-500 mt-1 font-medium">Live Weekend Builds & Office Hours</div>
+        </div>
+        <div class="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="text-2xl font-extrabold text-orange-600">4 Shipped</div>
+          <div class="text-xs text-slate-500 mt-1 font-medium">Production-grade portfolio MVPs</div>
+        </div>
+        <div class="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="text-2xl font-extrabold text-slate-900">4.9 / 5.0</div>
+          <div class="text-xs text-slate-500 mt-1 font-medium">Alumni score from 280+ fellows</div>
+        </div>
+        <div class="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="text-2xl font-extrabold text-emerald-600">100% Refund</div>
+          <div class="text-xs text-slate-500 mt-1 font-medium">7-Day risk-free guarantee</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Problem vs Solution (Why Practical AI Beats Generic Courses) -->
+  <section id="comparison" class="py-16 bg-slate-50 border-b border-slate-200/80">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">The Reality Check</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+          Why 90% of Pre-Recorded AI Courses Are Ineffective
+        </h2>
+        <p class="text-slate-600 text-xs sm:text-sm mt-2">
+          Generic ChatGPT prompt tricks don't get you hired or help you build startups. Here is how our fellowship operates differently.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Standard Webinars -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 text-slate-700 shadow-xs">
+          <div class="flex items-center gap-2 text-rose-600 font-bold text-sm mb-4">
+            <i data-lucide="x-circle" class="w-5 h-5"></i>
+            <span>Generic ₹499 Pre-Recorded Webinars</span>
+          </div>
+          <ul class="space-y-3 text-xs sm:text-sm text-slate-600">
+            <li class="flex items-start gap-2.5">
+              <span class="text-rose-500 font-bold">✕</span>
+              <span><strong>Theoretic lectures:</strong> Endless slides explaining "what is a transformer" with zero hands-on building.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-rose-500 font-bold">✕</span>
+              <span><strong>Trivial prompt tricks:</strong> "Act as an expert copywriter" prompts that produce bland, repetitive text.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-rose-500 font-bold">✕</span>
+              <span><strong>Zero real portfolio:</strong> You leave with a generic digital certificate that no founder or engineering lead respects.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-rose-500 font-bold">✕</span>
+              <span><strong>High dropout rate:</strong> Self-paced videos with an inactive Telegram group and 92% abandonment rate.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- The Pawzz AI Way -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-orange-500 text-slate-800 shadow-md relative">
+          <div class="absolute -top-3 right-6 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            Practical AI Fellowship
+          </div>
+          <div class="flex items-center gap-2 text-orange-600 font-bold text-sm mb-4">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            <span>System Builders & Automation Engineers</span>
+          </div>
+          <ul class="space-y-3 text-xs sm:text-sm text-slate-700">
+            <li class="flex items-start gap-2.5">
+              <span class="text-orange-600 font-bold">✓</span>
+              <span><strong>Live Multi-Agent Pipelines:</strong> Build real systems connecting n8n, Supabase, LLMs, and WhatsApp Cloud API.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-orange-600 font-bold">✓</span>
+              <span><strong>Autonomous Growth Engines:</strong> Automate social carousels, email customer triage, and lead scoring.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-orange-600 font-bold">✓</span>
+              <span><strong>4 Verifiable Shipped MVPs:</strong> Tangible live projects you demo in interviews or sell to real clients.</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="text-orange-600 font-bold">✓</span>
+              <span><strong>Founder Code Reviews:</strong> Capped at 30 fellows for direct feedback, hot-seat tear-downs, and peer accountability.</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive 4-Week Curriculum (Clean Tabs) -->
+  <section id="curriculum" class="py-16 bg-white border-b border-slate-200/80">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Step-by-Step Roadmap</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+          4 Weeks. 4 Tangible Production Projects.
+        </h2>
+        <p class="text-slate-600 text-xs sm:text-sm mt-2">
+          Every single week culminates in a concrete, working tool added to your personal repository.
+        </p>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="flex items-center justify-center gap-2 max-w-md mx-auto mb-8 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+        <button onclick="setWeek(1)" id="tabWeek1" class="week-tab flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-orange-600 text-white transition">Week 1</button>
+        <button onclick="setWeek(2)" id="tabWeek2" class="week-tab flex-1 py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition">Week 2</button>
+        <button onclick="setWeek(3)" id="tabWeek3" class="week-tab flex-1 py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition">Week 3</button>
+        <button onclick="setWeek(4)" id="tabWeek4" class="week-tab flex-1 py-2 px-3 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition">Week 4</button>
+      </div>
+
+      <!-- Dynamic Content Card -->
+      <div id="curriculumContent" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 custom-shadow">
+        <!-- Rendered by JS -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Real Shipped Projects Grid -->
+  <section id="projects" class="py-16 bg-slate-50 border-b border-slate-200/80">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Proof of Work</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+          4 Real Projects You Will Ship
+        </h2>
+        <p class="text-slate-600 text-xs sm:text-sm mt-2">
+          You don't just write prompts — you publish real tools, integrations, and web apps that solve actual commercial problems.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- Project 1 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 transition hover-card">
+          <div class="flex items-center justify-between text-xs text-orange-600 font-bold mb-3">
+            <span>Project #1 • Growth Automation</span>
+            <span class="bg-orange-100 text-orange-800 px-2.5 py-0.5 rounded-full text-[10px]">Week 1 Milestone</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900">Autonomous LinkedIn/IG Carousel Generator</h3>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            A pipeline using n8n and Claude 3.7 that turns a raw text thought into structured 7-slide carousel layouts, automatically generating ready-to-publish graphics.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-1.5 text-[11px]">
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">n8n / Make</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Claude 3.7 API</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Bannerbear / Canva</span>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 transition hover-card">
+          <div class="flex items-center justify-between text-xs text-blue-600 font-bold mb-3">
+            <span>Project #2 • Conversational AI</span>
+            <span class="bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-[10px]">Week 2 Milestone</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900">Intelligent WhatsApp Customer Triage Agent</h3>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            Deploy a 24/7 intelligent WhatsApp bot that answers business FAQs, qualifies incoming leads, checks database inventory in real-time, and books appointments.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-1.5 text-[11px]">
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">WhatsApp Cloud API</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Supabase</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Tool Calling</span>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 transition hover-card">
+          <div class="flex items-center justify-between text-xs text-emerald-600 font-bold mb-3">
+            <span>Project #3 • Autonomous Research</span>
+            <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-[10px]">Week 3 Milestone</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900">Competitive Intelligence & Scraping Agent</h3>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            Multi-agent research bot that crawls competitor pricing, synthesizes product changes, and generates an automated Monday morning executive briefing email.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-1.5 text-[11px]">
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Firecrawl API</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Gemini 2.5 Flash</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Resend Email</span>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 transition hover-card">
+          <div class="flex items-center justify-between text-xs text-amber-600 font-bold mb-3">
+            <span>Project #4 • Full-Stack Micro-SaaS</span>
+            <span class="bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full text-[10px]">Week 4 Grand Capstone</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900">Full-Stack AI SaaS Web Application</h3>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            Build and launch a complete web app with user authentication, payment processing (Razorpay/Stripe), and a generative AI core feature ready for users.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-1.5 text-[11px]">
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Next.js + Cursor</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Clerk Auth</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium">Razorpay Checkout</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Pricing & Transparent Enrollment (White Cards with Orange Accent) -->
+  <section id="pricing" class="py-16 bg-white border-b border-slate-200/80">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Transparent Tuition</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+          An Investment in Practical Skills, Not Paper Certificates
+        </h2>
+        <p class="text-slate-600 text-xs sm:text-sm mt-2">
+          One-time fee with lifetime access to all updated automation templates, alumni network, and project codebases.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        
+        <!-- Student Pass -->
+        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Student Subsidy</span>
+              <span class="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold">Valid College ID</span>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mt-2">Student Fellow Pass</h3>
+            <p class="text-xs text-slate-500 mt-1">For college students & interns looking to break into product & AI startups.</p>
+
+            <div class="mt-5 flex items-baseline gap-2">
+              <span class="text-3xl font-extrabold text-slate-900">₹1,999</span>
+              <span class="text-xs text-slate-400 line-through">₹4,999</span>
+              <span class="text-xs text-emerald-600 font-bold">60% OFF</span>
+            </div>
+
+            <ul class="mt-6 space-y-2.5 text-xs text-slate-600">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> Full 4-week live cohort access</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> 4 Guided portfolio projects</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> Code templates & n8n blueprints</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> Discord peer community access</li>
+            </ul>
+          </div>
+
+          <button onclick="openLeadModal('apply')" class="mt-8 w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition">
+            Apply with Student ID
+          </button>
+        </div>
+
+        <!-- Professional Pass -->
+        <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-orange-500 flex flex-col justify-between relative shadow-lg">
+          <div class="absolute -top-3 right-6 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            Most Popular
+          </div>
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-orange-700 uppercase tracking-wider">Professional & Founder</span>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mt-2">Executive Builder Pass</h3>
+            <p class="text-xs text-slate-500 mt-1">For working professionals, solopreneurs & agency founders.</p>
+
+            <div class="mt-5 flex items-baseline gap-2">
+              <span class="text-3xl font-extrabold text-slate-900">₹3,999</span>
+              <span class="text-xs text-slate-400 line-through">₹8,999</span>
+              <span class="text-xs text-orange-600 font-bold">Early-Bird Rate</span>
+            </div>
+
+            <ul class="mt-6 space-y-2.5 text-xs text-slate-700">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> Everything in Student Pass</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> <strong>2x 1-on-1 Founder Code & Architecture Reviews</strong></li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> Commercial automation blueprints (Client-ready)</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-orange-600"></i> Fast-track startup referral network</li>
+            </ul>
+          </div>
+
+          <button onclick="openLeadModal('apply')" class="mt-8 w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs shadow-md shadow-orange-600/20 transition">
+            Reserve Seat (Instant Confirmation)
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Money-Back Guarantee -->
+      <div class="mt-8 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+        <span><strong>100% Risk-Free Guarantee:</strong> If after Week 1 you feel you didn't learn practical building skills, email us for a full refund.</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Interactive FAQs -->
+  <section id="faqs" class="py-16 bg-slate-50 border-b border-slate-200/80">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      
+      <div class="text-center mb-8">
+        <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Got Questions?</span>
+        <h2 class="text-2xl font-extrabold text-slate-900 mt-1">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm">
+        
+        <details class="bg-white border border-slate-200 rounded-xl p-4 group" open>
+          <summary class="font-bold text-slate-800 cursor-pointer list-none flex items-center justify-between">
+            <span>Do I need a Computer Science or coding background?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">
+            No prior coding experience is mandatory. Week 1 & 2 focus on visual automation engines (n8n, Make.com) and prompt orchestration. In Weeks 3 & 4, we teach you how to write and debug code using modern AI code editors like Cursor and Claude Code. If you know how to think logically, you will succeed.
+          </p>
+        </details>
+
+        <details class="bg-white border border-slate-200 rounded-xl p-4 group">
+          <summary class="font-bold text-slate-800 cursor-pointer list-none flex items-center justify-between">
+            <span>What are the class timings and time commitment?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">
+            Live cohort workshops take place on Saturdays and Sundays (6:00 PM – 8:00 PM IST). All sessions are recorded in high-definition and uploaded within 2 hours. Expect to spend approximately 4–5 hours per week building your hands-on project.
+          </p>
+        </details>
+
+        <details class="bg-white border border-slate-200 rounded-xl p-4 group">
+          <summary class="font-bold text-slate-800 cursor-pointer list-none flex items-center justify-between">
+            <span>Will I have to pay for expensive AI API keys during the fellowship?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">
+            No! We provide shared sandbox API credits and guide you through generous free tiers for Google Gemini 2.5 Flash, Supabase, Groq, and self-hosted n8n instances, keeping your out-of-pocket costs at virtually ₹0.
+          </p>
+        </details>
+
+        <details class="bg-white border border-slate-200 rounded-xl p-4 group">
+          <summary class="font-bold text-slate-800 cursor-pointer list-none flex items-center justify-between">
+            <span>How does the 100% money-back guarantee work?</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">
+            Attend the first week of live sessions, build the Week 1 automation. If you feel the cohort is not delivering 10x the value of your tuition fee, simply message us within 7 days for a 100% full refund. No questions asked.
+          </p>
+        </details>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Sticky Bottom Mobile Bar -->
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 sm:hidden flex items-center justify-between gap-3 shadow-lg">
+    <div>
+      <div class="text-[11px] text-slate-500 font-medium">Cohort 04 • 12 seats left</div>
+      <div class="text-sm font-bold text-slate-900">₹1,999 <span class="text-[10px] text-slate-400 line-through">₹4,999</span></div>
+    </div>
+    <button onclick="openLeadModal('apply')" class="px-5 py-2.5 rounded-xl bg-orange-600 text-white font-bold text-xs shadow-sm">
+      Apply Now
+    </button>
+  </div>
+
+  <!-- MODAL: Lead Capture & Application Flow (White & Clean) -->
+  <div id="leadModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative">
+      <button onclick="closeLeadModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="mb-5">
+        <span id="modalCategoryTag" class="text-xs font-bold text-orange-600 uppercase tracking-wider">Cohort 04 Admission</span>
+        <h3 id="modalTitle" class="text-xl font-bold text-slate-900 mt-1">Apply for Practical AI Fellowship</h3>
+        <p id="modalSubtitle" class="text-xs text-slate-500 mt-1">Complete your application. Our admissions team reviews and responds within 12 hours.</p>
+      </div>
+
+      <form id="leadForm" onsubmit="handleFormSubmission(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Full Name</label>
+          <input type="text" required placeholder="e.g. Rahul Sharma" class="w-full bg-slate-50 border border-slate-200 focus:border-orange-500 rounded-xl p-2.5 text-slate-800 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Email Address</label>
+            <input type="email" required placeholder="rahul@example.com" class="w-full bg-slate-50 border border-slate-200 focus:border-orange-500 rounded-xl p-2.5 text-slate-800 focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">WhatsApp Number</label>
+            <input type="tel" required placeholder="+91 98765 43210" class="w-full bg-slate-50 border border-slate-200 focus:border-orange-500 rounded-xl p-2.5 text-slate-800 focus:outline-none">
+          </div>
+        </div>
+
+        <div id="additionalFields">
+          <label class="block font-bold text-slate-700 mb-1">Current Role / College</label>
+          <input type="text" placeholder="e.g. 3rd Year B.Tech, Product Intern, Freelancer" class="w-full bg-slate-50 border border-slate-200 focus:border-orange-500 rounded-xl p-2.5 text-slate-800 focus:outline-none">
+        </div>
+
+        <button type="submit" id="modalSubmitBtn" class="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-2">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span id="modalBtnText">Submit Application & Reserve Seat</span>
+        </button>
+
+        <p class="text-[11px] text-slate-400 text-center mt-2">
+          🔒 Zero spam. We send syllabus PDFs and admissions decisions directly via WhatsApp & Email.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastSuccess" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3">
+    <div class="w-7 h-7 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center">
+      <i data-lucide="check" class="w-4 h-4"></i>
+    </div>
+    <div>
+      <h4 class="text-xs font-bold" id="toastTitle">Success!</h4>
+      <p class="text-[11px] text-slate-300" id="toastMessage">Your request has been received.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white py-8 border-t border-slate-200 text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-md bg-orange-600 text-white flex items-center justify-center font-bold text-[10px]">PZ</div>
+        <span class="text-slate-800 font-bold">Pawzz AI Academy</span>
+        <span>• Candidate Prototype for Akash Kumar</span>
+      </div>
+      <div>
+        Designed for students & modern digital builders.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const weeksData = {
+      1: {
+        title: "Week 1: AI Prompt Engineering & Advanced Reasoning",
+        desc: "Move past simple text generation. Learn how to prompt Claude 3.7, Deep Research, and GPT-4o for deterministic JSON, structured schemas, and zero-shot reasoning.",
+        modules: [
+          "Few-shot prompting & system prompt engineering for predictable outputs",
+          "Structured JSON generation & schema validation (Pydantic / Zod)",
+          "Context window optimization & token cost economics",
+          "Hands-on Lab: Build an Automated News Aggregator & Executive Summarizer"
+        ],
+        badge: "Module 1 • Foundation",
+        deliverable: "Deliverable: Shipped Automated Content & News Digest Engine"
+      },
+      2: {
+        title: "Week 2: Autonomous Workflows & No-Code Automation (n8n/Make)",
+        desc: "Connect LLMs to the real world. Master webhooks, API polling, data transformations, and scheduled cron jobs without writing extensive backends.",
+        modules: [
+          "n8n & Make.com fundamentals: Webhooks, Routers, Iterators, and Error Handling",
+          "Connecting Google Sheets, Airtable, Notion & Slack to AI pipelines",
+          "Trigger-based marketing automation & lead scoring engines",
+          "Hands-on Lab: Autonomous LinkedIn & Instagram Carousel Generator"
+        ],
+        badge: "Module 2 • Automation",
+        deliverable: "Deliverable: Production Social Media Carousel Engine"
+      },
+      3: {
+        title: "Week 3: Multi-Modal Systems & Intelligent WhatsApp Agents",
+        desc: "Build AI agents that interact with users over voice, images, and WhatsApp with long-term memory and database tool calling.",
+        modules: [
+          "Meta WhatsApp Cloud API integration & webhook authentication",
+          "Function calling / Tool calling (Querying live SQL databases via natural language)",
+          "Vision APIs (Analyzing invoices, receipts, and pet medical reports)",
+          "Hands-on Lab: 24/7 WhatsApp Customer Triage & Booking Bot"
+        ],
+        badge: "Module 3 • Agentic Systems",
+        deliverable: "Deliverable: Live WhatsApp Interactive Customer Bot"
+      },
+      4: {
+        title: "Week 4: Shipping Full-Stack AI MVPs with Cursor & v0",
+        desc: "Turn your automation workflows into full web applications. Learn how to prompt AI coding tools (Cursor, v0, Bolt) to build production-ready frontends and databases.",
+        modules: [
+          "Vibe coding with Cursor, Claude Code, and v0 for instant Next.js frontends",
+          "Supabase auth, Row Level Security (RLS), and database schemas",
+          "Integrating Stripe / Razorpay payments for recurring SaaS subscriptions",
+          "Hands-on Lab: Launching your Capstone AI Micro-SaaS to real users"
+        ],
+        badge: "Module 4 • Capstone & Launch",
+        deliverable: "Deliverable: Shipped Full-Stack AI SaaS Application"
+      }
+    };
+
+    function setWeek(w) {
+      document.querySelectorAll('.week-tab').forEach((tab, idx) => {
+        if (idx + 1 === w) {
+          tab.classList.remove('text-slate-600');
+          tab.classList.add('bg-orange-600', 'text-white');
+        } else {
+          tab.classList.add('text-slate-600');
+          tab.classList.remove('bg-orange-600', 'text-white');
+        }
+      });
+
+      const data = weeksData[w];
+      const container = document.getElementById('curriculumContent');
+      container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-8 space-y-3">
+            <span class="inline-block text-[11px] font-bold text-orange-800 bg-orange-100 border border-orange-200 px-3 py-0.5 rounded-full">
+              ${data.badge}
+            </span>
+            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">${data.title}</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">${data.desc}</p>
+            
+            <div class="pt-2">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">Key Competencies & Practical Labs:</h4>
+              <ul class="space-y-2 text-xs sm:text-sm text-slate-600">
+                ${data.modules.map(m => `
+                  <li class="flex items-start gap-2.5">
+                    <div class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <i data-lucide="check" class="w-3 h-3"></i>
+                    </div>
+                    <span>${m}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col justify-between">
+            <div>
+              <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Weekly Milestone Project</div>
+              <div class="p-3.5 bg-white rounded-xl border border-orange-200 text-xs font-bold text-orange-800 shadow-xs leading-relaxed">
+                ${data.deliverable}
+              </div>
+              <p class="text-[11px] text-slate-500 mt-2.5 leading-relaxed">Live mentor feedback, code reviews, and showcase presentation every Sunday.</p>
+            </div>
+            <button onclick="openLeadModal('syllabus')" class="mt-5 w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Download Week ${w} Exercises</span>
+            </button>
+          </div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    let currentModalMode = 'apply';
+
+    function openLeadModal(mode) {
+      currentModalMode = mode;
+      const modal = document.getElementById('leadModal');
+      const title = document.getElementById('modalTitle');
+      const subtitle = document.getElementById('modalSubtitle');
+      const tag = document.getElementById('modalCategoryTag');
+      const btnText = document.getElementById('modalBtnText');
+      const extraFields = document.getElementById('additionalFields');
+
+      if (mode === 'syllabus') {
+        tag.innerText = "Free Resource Download";
+        title.innerText = "Get the 2025 AI Systems Syllabus & Toolkit";
+        subtitle.innerText = "Includes complete 4-week module breakdown, 15+ n8n workflow templates, and prompt blueprints.";
+        btnText.innerText = "Send Syllabus to WhatsApp & Email";
+        extraFields.classList.add('hidden');
+      } else {
+        tag.innerText = "Cohort 04 Admission";
+        title.innerText = "Apply for Practical AI Fellowship";
+        subtitle.innerText = "Reserve your seat in Cohort 04. Limited to 30 fellows for personalized mentor reviews.";
+        btnText.innerText = "Submit Application & Reserve Seat";
+        extraFields.classList.remove('hidden');
+      }
+
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeLeadModal() {
+      document.getElementById('leadModal').classList.add('hidden');
+    }
+
+    function handleFormSubmission(e) {
+      e.preventDefault();
+      closeLeadModal();
+      
+      const toast = document.getElementById('toastSuccess');
+      const title = document.getElementById('toastTitle');
+      const msg = document.getElementById('toastMessage');
+
+      if (currentModalMode === 'syllabus') {
+        title.innerText = "Syllabus Sent! 📥";
+        msg.innerText = "Check your email and WhatsApp for the download link and n8n starter kit.";
+      } else {
+        title.innerText = "Application Received! 🚀";
+        msg.innerText = "Our admissions director will contact you on WhatsApp within 12 hours.";
+      }
+
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+      lucide.createIcons();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setWeek(1);
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
