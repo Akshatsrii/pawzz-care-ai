@@ -1,4 +1,4 @@
-# 🐾 Pawzz Care & AI Systems — Candidate Assignment
+# 🐾 Pawzz Care & AI Systems \
 
 > **Role:** Product Development, Design & AI Systems Intern  
 > **Organization:** Pawzz Foundation  
